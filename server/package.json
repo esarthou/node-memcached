@@ -1,0 +1,52 @@
+{
+  "name": "node-memcached",
+  "version": "1.0.0",
+  "description": "Node js implementation of memcached protocol",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon --exec babel-node ./index.js"
+  },
+  "author": "Esteban Sarthou",
+  "license": "ISC",
+  "devDependencies": {
+    "@babel/cli": "^7.10.4",
+    "@babel/core": "^7.9.6",
+    "@babel/node": "^7.8.7",
+    "@babel/plugin-proposal-class-properties": "^7.10.1",
+    "@babel/preset-env": "^7.10.4",
+    "@babel/register": "^7.10.4",
+    "babel-eslint": "^10.1.0",
+    "chai": "^4.2.0",
+    "eslint": "^7.20.0",
+    "eslint-config-airbnb-base": "^14.1.0",
+    "eslint-plugin-import": "^2.22.0",
+    "mocha": "^8.2.1",
+    "mochawesome": "^6.1.1",
+    "nodemon": "^2.0.4",
+    "nyc": "^15.1.0",
+    "supertest": "^4.0.2"
+  },
+  "eslint.options": {
+    "ignorePath": ".gitignore"
+  },
+  "mocha": {
+    "require": "@babel/register",
+    "reporter": "mochawesome",
+    "reporterOptions": "reportDir=./test/results/mochawesome",
+    "spec": [
+      "./test/integration/*.test.js"
+    ]
+  },
+  "nyc": {
+    "reporter": [
+      "text-summary",
+      "html",
+      "json-summary"
+    ],
+    "report-dir": "./test/results/coverage"
+  },
+  "dependencies": {
+    "crypto-js": "^4.0.0",
+    "joi": "^17.4.0"
+  }
+}
