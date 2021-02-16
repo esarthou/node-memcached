@@ -9,35 +9,38 @@ export default class Parser {
     }
 
     translate(message) {
-        // console.debug(`DEBUG translate: ${message.toString('utf8')}`);
-        const lines = this.parseLines(message);
-        const request = this.parse(lines);
-        // console.error(JSON.stringify(request));
-        if (this.validate(request)) {
-            return request;
+        const [commandLine, dataBlock] = message.toString('utf8').split('\r\n');
+        return this.parse(commandLine, dataBlock);
+    }
+
+    parse(commandLine, dataBlock) {
+        const words = commandLine.trim().split(/\s+/);
+        const value = typeof dataBlock !== 'undefined' ? dataBlock.trim() : '';
+        const command = words[0];
+        const schema = Models.find((model) => model.methods.includes(command));
+        if (schema) {
+            let request = {};
+            switch (schema.group) {
+            case 'retrieval':
+            case 'deletion':
+            default:
+                words.splice(0, 1);
+                request = { command, keys: words };
+                break;
+            case 'storage':
+                request = {
+                    command, key: words[1], flags: words[2], exptime: words[3], bytes: words[4], uniqueCas: (words[5] ? words[5] : ''), value,
+                };
+                break;
+            case 'statistics':
+                request = { command };
+            }
+            if (this.validate(request, schema)) return request;
         }
-        return 'ERROR\r\n';
+        return false;
     }
 
-    parse = (lines) => {
-        const words = lines.line.trim().split(/\s+/);
-        const value = typeof lines.value !== 'undefined' ? lines.value.trim() : '';
-        console.log(`Lines: ${JSON.stringify(lines)}`);
-        const request = {
-            command: words[0],
-            key: words[1],
-            flags: words[2],
-            exptime: words[3],
-            bytes: words[4],
-            value,
-        };
-        console.log(`VAlUE ${value}`);
-        // console.log(`Parsed request: ${JSON.stringify(request)}`);
-        return request;
-    }
-
-    validate = (request) => {
-        const schema = Models[request.command];
+    validate = (request, schema) => {
         if (schema) {
             const { error } = schema.protocol.validate(request, { abortEarly: false });
             if (error) {
@@ -53,14 +56,5 @@ export default class Parser {
         }
         console.error(`Command not supported: ${request.command}`);
         return false;
-    }
-
-    parseLines = (rawData) => {
-        const data = rawData.toString('utf8');
-        // console.log(`DEBUGGING: ${data}`);
-        return {
-            line: data.split('|')[0],
-            value: data.split('|')[1],
-        };
     }
 }

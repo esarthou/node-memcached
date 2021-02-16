@@ -1,0 +1,164 @@
+{
+  "stats": {
+    "suites": 1,
+    "tests": 4,
+    "passes": 3,
+    "pending": 0,
+    "failures": 1,
+    "start": "2021-02-16T14:17:07.455Z",
+    "end": "2021-02-16T14:17:07.587Z",
+    "duration": 132,
+    "testsRegistered": 4,
+    "passPercent": 75,
+    "pendingPercent": 0,
+    "other": 0,
+    "hasOther": false,
+    "skipped": 0,
+    "hasSkipped": false
+  },
+  "results": [
+    {
+      "uuid": "af8e1620-d618-43d8-8c81-d139fc85131a",
+      "title": "",
+      "fullFile": "",
+      "file": "",
+      "beforeHooks": [],
+      "afterHooks": [],
+      "tests": [],
+      "suites": [
+        {
+          "uuid": "853e1cff-8e76-43f0-b8d7-80ff3cef6c94",
+          "title": "Node-Memcached Integration tests",
+          "fullFile": "/Users/esteban/node-memcached/server/test/integration.test.js",
+          "file": "/test/integration.test.js",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [
+            {
+              "title": "Should create a new record and return STORED",
+              "fullTitle": "Node-Memcached Integration tests Should create a new record and return STORED",
+              "timedOut": false,
+              "duration": 24,
+              "state": "passed",
+              "speed": "fast",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "client.set(testParameters.key, testParameters.initialValue, 900, (err, rsp) => {\n  if (err) {\n    console.log(err);\n    _chai.assert.boom();\n  }\n  _chai.assert.equal(rsp, true);\n});",
+              "err": {},
+              "uuid": "814f74f8-9ce9-4c51-bd0d-ca6d11090b70",
+              "parentUUID": "853e1cff-8e76-43f0-b8d7-80ff3cef6c94",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "Should get the previously created record and match the value",
+              "fullTitle": "Node-Memcached Integration tests Should get the previously created record and match the value",
+              "timedOut": false,
+              "duration": 2,
+              "state": "passed",
+              "speed": "fast",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "client.get(testParameters.key, (err, rsp) => {\n  if (err) {\n    console.log(err);\n  }\n  _chai.assert.equal(rsp, testParameters.initialValue);\n});",
+              "err": {},
+              "uuid": "c38da32c-1403-4c62-9269-c67d79b52378",
+              "parentUUID": "853e1cff-8e76-43f0-b8d7-80ff3cef6c94",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "Should gets the previously created record match the value and store uniqueCas for later",
+              "fullTitle": "Node-Memcached Integration tests Should gets the previously created record match the value and store uniqueCas for later",
+              "timedOut": false,
+              "duration": 1,
+              "state": "passed",
+              "speed": "fast",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "client.gets(testParameters.key, (err, rsp) => {\n  if (err) {\n    console.log(err);\n  }\n  testParameters.uniqueCas = rsp.cas;\n  _chai.assert.equal(rsp[testParameters.key], testParameters.initialValue);\n});",
+              "err": {},
+              "uuid": "ea8df4a0-ea79-40d1-b955-5933681ec625",
+              "parentUUID": "853e1cff-8e76-43f0-b8d7-80ff3cef6c94",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "Should cas the previously created record",
+              "fullTitle": "Node-Memcached Integration tests Should cas the previously created record",
+              "timedOut": false,
+              "duration": 27,
+              "state": "failed",
+              "speed": null,
+              "pass": false,
+              "fail": true,
+              "pending": false,
+              "context": null,
+              "code": "client.cas(testParameters.key, testParameters.initialValue, 900, testParameters.uniqueCas, (err, rsp) => {\n  if (err) {\n    console.log(err);\n  }\n  _chai.assert.equal(rsp, true);\n});",
+              "err": {
+                "message": "AssertionError: expected undefined to equal true",
+                "estack": "AssertionError: expected undefined to equal true\n    at Object.callback (test/integration.test.js:60:20)\n    at Object.validateArg (node_modules/memcached/lib/utils.js:82:29)\n    at Client.memcachedCommand [as command] (node_modules/memcached/lib/memcached.js:281:34)\n    at Client.setters (node_modules/memcached/lib/memcached.js:936:10)\n    at Client.cas (node_modules/memcached/lib/memcached.js:986:22)\n    at Context.<anonymous> (test/integration.test.js:56:16)\n    at processImmediate (internal/timers.js:458:21)",
+                "diff": null
+              },
+              "uuid": "fc2bfa06-a159-4a3f-b68c-565b666b8af7",
+              "parentUUID": "853e1cff-8e76-43f0-b8d7-80ff3cef6c94",
+              "isHook": false,
+              "skipped": false
+            }
+          ],
+          "suites": [],
+          "passes": [
+            "814f74f8-9ce9-4c51-bd0d-ca6d11090b70",
+            "c38da32c-1403-4c62-9269-c67d79b52378",
+            "ea8df4a0-ea79-40d1-b955-5933681ec625"
+          ],
+          "failures": [
+            "fc2bfa06-a159-4a3f-b68c-565b666b8af7"
+          ],
+          "pending": [],
+          "skipped": [],
+          "duration": 54,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 60000
+        }
+      ],
+      "passes": [],
+      "failures": [],
+      "pending": [],
+      "skipped": [],
+      "duration": 0,
+      "root": true,
+      "rootEmpty": true,
+      "_timeout": 2000
+    }
+  ],
+  "meta": {
+    "mocha": {
+      "version": "8.3.0"
+    },
+    "mochawesome": {
+      "options": {
+        "quiet": false,
+        "reportFilename": "mochawesome",
+        "saveHtml": true,
+        "saveJson": true,
+        "consoleReporter": "spec",
+        "useInlineDiffs": false,
+        "code": true
+      },
+      "version": "6.2.1"
+    },
+    "marge": {
+      "options": {
+        "reportDir": "./test/results/mochawesome"
+      },
+      "version": "5.1.0"
+    }
+  }
+}

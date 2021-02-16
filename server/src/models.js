@@ -1,20 +1,30 @@
 import Joi from 'joi';
 
-const Models = {
-    get: {
+const Models = [
+    {
+        group: 'retrieval',
+        methods: [
+            'get',
+            'gets',
+        ],
         protocol: Joi.object({
             command: Joi.string().required(),
-            key: Joi.string().required(),
-            flags: Joi.number().allow(''),
-            exptime: Joi.number().default(0).allow(''),
-            bytes: Joi.number().allow(''),
-            value: Joi.string().allow(''),
+            keys: Joi.array().required(),
         }),
         output: {
             null: 'END',
         },
     },
-    set: {
+    {
+        group: 'storage',
+        methods: [
+            'set',
+            'add',
+            'replace',
+            'append',
+            'prepend',
+            'cas',
+        ],
         protocol: Joi.object({
             command: Joi.string().required(),
             key: Joi.string().required(),
@@ -22,6 +32,7 @@ const Models = {
             exptime: Joi.number().required().default(0),
             bytes: Joi.number().required(),
             value: Joi.string().required().allow(''),
+            uniqueCas: Joi.number().allow(''),
         }),
         order: {
             key: true,
@@ -34,28 +45,28 @@ const Models = {
             false: 'NOT_STORED',
         },
     },
-    delete: {
+    {
+        group: 'deletion',
+        methods: ['delete'],
         protocol: Joi.object({
-            key: Joi.string().required(),
+            command: Joi.string().required(),
+            keys: Joi.array().items(Joi.string()).required(),
         }),
         output: {
             true: 'DELETED',
             false: 'NOT_FOUND',
         },
     },
-    stats: {
+    {
+        group: 'statistics',
+        methods: ['stats'],
         protocol: Joi.object({
-            command: Joi.string().allow(''),
-            key: Joi.string().allow(''),
-            flags: Joi.number().allow(''),
-            exptime: Joi.number().default(0).allow(''),
-            bytes: Joi.number().allow(''),
-            value: Joi.string().allow(''),
+            command: Joi.string().required(),
         }),
         output: {
             null: 'END',
         },
     },
-};
+];
 
 export default Models;

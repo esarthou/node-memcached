@@ -5,6 +5,7 @@ import Cache from './cache';
 const DEFAULT_PORT = 11111;
 const DEFAULT_HOST = 'localhost';
 
+const parser = new Parser();
 export default class Server {
     constructor() {
         this.server = null;
@@ -23,15 +24,19 @@ export default class Server {
     clientConnection = (socket) => {
         // Log when a client connnects.
         console.log(`${socket.remoteAddress}:${socket.remotePort} Connected`);
-        // Listen for data from the connected client.
+        // Listen for messages passed through the connection
         socket.on('data', (data) => {
-            // Log data from the client
-            console.log(`${socket.remoteAddress}:${socket.remotePort}: ${data} `);
+            console.log(`${socket.remoteAddress}:${socket.remotePort} ${data} `);
             // TODO: Here's where the magic happens.
-            const parser = new Parser();
-            const response = this.handleCommand(parser.translate(data));
-            // Send back the data to the client.
-            socket.write(`${response}\r\n`);
+            try {
+                const responseArray = this.handleCommand(parser.translate(data));
+                responseArray.forEach((response) => {
+                    socket.write(`${response}\r\n`);
+                });
+            } catch (error) {
+                console.error(`Internal server error, please debug: ${error}`);
+                socket.write('ERROR\r\n');
+            }
         });
         // Handle client connection termination.
         socket.on('close', () => {
@@ -44,19 +49,36 @@ export default class Server {
     }
 
     /**
-     * @param {object} payload
-     * @returns {string}
+     * method router
+     * @param {object} request payload
+     * @returns {array}
      */
     handleCommand(req) {
-        switch (req.command) {
-        case 'get':
-            return this.cache.get(req.key);
-        case 'set':
-            return this.cache.set(req.key, req.value, req.exptime, req.flags);
-        case 'stats':
-            return JSON.stringify(this.cache.stats());
-        default:
-            return 'ERROR\r\n';
-        }
+        if (req) {
+            switch (req.command) {
+            case 'get':
+                return req.keys.map((key) => this.cache.get(key));
+            case 'gets':
+                return req.keys.map((key) => this.cache.gets(key));
+            case 'delete':
+                return req.keys.map((key) => this.cache.delete(key));
+            case 'set':
+                return [this.cache.set(req.key, req.value, req.exptime, req.flags)];
+            case 'add':
+                return [this.cache.add(req.key, req.value, req.exptime, req.flags)];
+            case 'replace':
+                return [this.cache.replace(req.key, req.value, req.exptime, req.flags)];
+            case 'append':
+                return [this.cache.append(req.key, req.value, req.exptime, req.flags)];
+            case 'prepend':
+                return [this.cache.prepend(req.key, req.value, req.exptime, req.flags)];
+            case 'cas':
+                return [this.cache.cas(req.key, req.value, req.exptime, req.flags)];
+            case 'stats':
+                return [JSON.stringify(this.cache.stats())];
+            default:
+                return ['ERROR'];
+            }
+        } return ['CLIENT_ERROR'];
     }
 }

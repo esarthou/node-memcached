@@ -1,5 +1,3 @@
-import { MD5 } from 'crypto-js';
-
 const MAX_EXPIRATION_OFFSET = 60 * 60 * 24 * 30;
 
 export default class Record {
@@ -9,7 +7,7 @@ export default class Record {
         } else {
             this.expiration = expiration;
         }
-        this.uniqueCas = MD5(`${Date.now()}-${value}`).toString();
+        this.uniqueCas = 1;
         this.value = value;
         this.length = value.length;
         this.flags = flags;

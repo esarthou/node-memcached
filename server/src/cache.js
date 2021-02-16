@@ -23,8 +23,16 @@ export default class Cache {
 
     get(key) {
         console.debug('Enter get function');
-        if (!this.contains(key)) return null;
-        return this.records.get(key).value;
+        if (!this.contains(key)) return 'END';
+        const record = this.records.get(key);
+        return `VALUE ${key} ${record.flags} ${record.length}\r\n${record.value}`;
+    }
+
+    gets(key) {
+        console.debug('Enter get function');
+        if (!this.contains(key)) return 'END';
+        const record = this.records.get(key);
+        return `VALUE ${key} ${record.flags} ${record.length} ${record.uniqueCas}\r\n${record.value}`;
     }
 
     set(key, value, exptime, flags) {
@@ -33,17 +41,72 @@ export default class Cache {
         this.records.set(key, record);
         process.nextTick(() => this.purge());
         this.totalRecords = this.records.size;
-        return true;
+        return 'STORED';
+    }
+
+    add(key, value, exptime, flags) {
+        console.debug('Enter add function');
+        if (!this.contains(key)) {
+            return this.set(key, value, exptime, flags);
+        } return 'NOT_STORED';
+    }
+
+    replace(key, value, exptime, flags) {
+        console.debug('Enter replace function');
+        if (this.contains(key)) {
+            const record = this.get(key);
+            record.value = value;
+            record.exptime = exptime;
+            record.flags = flags;
+            record.uniqueCas++;
+            this.set(key, record);
+            return 'STORED';
+        } return 'NOT_STORED';
+    }
+
+    append(key, value, exptime, flags) {
+        console.debug('Enter append function');
+        if (this.contains(key)) {
+            const record = this.get(key);
+            record.value = `${record.value}${value}`;
+            record.exptime = exptime;
+            record.flags = flags;
+            record.uniqueCas++;
+            this.set(key, record);
+            return 'STORED';
+        } return 'NOT_STORED';
+    }
+
+    prepend(key, value, exptime, flags) {
+        console.debug('Enter prepend function');
+        if (this.contains(key)) {
+            const record = this.get(key);
+            record.value = `${value}${record.value}`;
+            record.exptime = exptime;
+            record.flags = flags;
+            record.uniqueCas++;
+            this.set(key, record);
+            return 'STORED';
+        } return 'NOT_STORED';
+    }
+
+    cas(key, value, exptime, flags, uniqueCas) {
+        const currentRecord = this.records.get(key);
+        if (this.contains(key)) {
+            if (currentRecord.uniqueCas === uniqueCas) {
+                return this.replace(key, value, exptime, flags);
+            } return 'EXISTS';
+        } return 'NOT_FOUND';
     }
 
     delete(key) {
         if (!this.contains(key)) {
-            return false;
+            return 'NOT_FOUND';
         }
         this.records.delete(key);
         process.nextTick(() => this.purge());
         this.totalRecords = this.records.size;
-        return true;
+        return 'DELETED';
     }
 
     purge() {
