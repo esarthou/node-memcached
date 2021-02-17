@@ -1,8 +1,9 @@
 package-lock.json
 dist/*
-test/results/mochawesome/*
-test/results/load/*
-test/results/coverage/*
-test/results/lint/*
+test/results/mochawesome/*.*
+test/results/load/*.*
+test/results/coverage/*.*
+test/results/lint/*.*
 package.zip
 .nyc_output
+node_modules/*
