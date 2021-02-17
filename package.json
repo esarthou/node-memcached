@@ -8,7 +8,7 @@
     "start:prod": "node ./dist/index.js",
     "test": "nyc --check-coverage --lines 60 --per-file --reporter=html --reporter=json-summary mocha --exit",
     "test:load": "artillery run ./test/loadtest.yml --output test/results/load/result.json; npm run report:load",
-    "report:load": "mkdir ./test/results/load; artillery report ./test/results/load/result.json",
+    "report:load": "rm -rf ./test/results/load; mkdir ./test/results/load; artillery report ./test/results/load/result.json",
     "clean": "rm -rf dist && mkdir dist ",
     "build": "cp -R src/* dist/ && cp -r package*.json dist && cd dist && npm install --production && zip -rq ../package.zip . && cd ..",
     "transpile": "babel src/ -d dist",
