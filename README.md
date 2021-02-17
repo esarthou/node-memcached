@@ -44,7 +44,7 @@ This will start an instance that listens for connections on **127.0.0.1:11111** 
 
 - Test coverage: ~/node-memcached/test/results/coverage/index.html
 
-- Load test reports: ~/node-memcached/server/test/results/load/result.json.html
+- Load test reports: ~/node-memcached/test/results/load/result.json.html
 
 ## Global dependencies:
 
