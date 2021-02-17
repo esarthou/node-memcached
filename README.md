@@ -3,7 +3,7 @@
 
 ## Basic usage:
 
-1 - Clone repository on local machine running:  
+1 - Clone repository on local machine:  
     
         git clone https://github.com/esarthou/node-memcached
 

@@ -3,7 +3,7 @@ dist/*
 test/results/mochawesome/*.*
 test/results/mochawesome/assets/*.*
 test/results/load/*.*
-test/results/coverage/*.*
+test/results/coverage/*
 test/results/lint/*.*
 package.zip
 .nyc_output
