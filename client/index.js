@@ -1,10 +1,10 @@
 const Memcached = require('memcached');
 
-const memcached = new Memcached('127.0.0.1:11111');
+const memcached = new Memcached('127.0.0.1:11111', { retries: 10, retry: 10000, remove: true, debug: true });
 
-memcached.set('foo', 'dfsdfsdf', 900, function (err, data) {
+memcached.get('echidna', function (err, data) {
     if (err)  {
         console.log(err);
     }
-    console.log(data);
+    console.log(`GET operation status: ${data}`);
   });

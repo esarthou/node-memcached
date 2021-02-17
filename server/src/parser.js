@@ -21,6 +21,9 @@ export default class Parser {
         if (schema) {
             let request = {};
             switch (schema.group) {
+            case 'flush':
+                request = { command };
+                break;
             case 'retrieval':
             case 'deletion':
             default:

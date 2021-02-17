@@ -32,6 +32,7 @@ export default class Server {
                 const responseArray = this.handleCommand(parser.translate(data));
                 responseArray.forEach((response) => {
                     socket.write(`${response}\r\n`);
+                    socket.write('END\r\n');
                 });
             } catch (error) {
                 console.error(`Internal server error, please debug: ${error}`);
@@ -69,11 +70,13 @@ export default class Server {
             case 'replace':
                 return [this.cache.replace(req.key, req.value, req.exptime, req.flags)];
             case 'append':
-                return [this.cache.append(req.key, req.value, req.exptime, req.flags)];
+                return [this.cache.append(req.key, req.value)];
             case 'prepend':
-                return [this.cache.prepend(req.key, req.value, req.exptime, req.flags)];
+                return [this.cache.prepend(req.key, req.value)];
             case 'cas':
-                return [this.cache.cas(req.key, req.value, req.exptime, req.flags)];
+                return [this.cache.cas(req.key, req.value, req.exptime, req.flags, req.uniqueCas)];
+            case 'flush':
+                return [this.cache.flush()];
             case 'stats':
                 return [JSON.stringify(this.cache.stats())];
             default:

@@ -22,79 +22,65 @@ export default class Cache {
     }
 
     get(key) {
-        console.debug('Enter get function');
+        // console.debug('Enter get function');
         if (!this.contains(key)) return 'END';
         const record = this.records.get(key);
         return `VALUE ${key} ${record.flags} ${record.length}\r\n${record.value}`;
     }
 
     gets(key) {
-        console.debug('Enter get function');
+        // console.debug('Enter get function');
         if (!this.contains(key)) return 'END';
         const record = this.records.get(key);
         return `VALUE ${key} ${record.flags} ${record.length} ${record.uniqueCas}\r\n${record.value}`;
     }
 
     set(key, value, exptime, flags) {
-        console.debug('Enter set function');
+        // console.debug('Enter set function');
         const record = new Record(value, exptime, flags);
         this.records.set(key, record);
         process.nextTick(() => this.purge());
-        this.totalRecords = this.records.size;
         return 'STORED';
     }
 
     add(key, value, exptime, flags) {
-        console.debug('Enter add function');
+        // console.debug('Enter add function');
         if (!this.contains(key)) {
             return this.set(key, value, exptime, flags);
         } return 'NOT_STORED';
     }
 
     replace(key, value, exptime, flags) {
-        console.debug('Enter replace function');
+        // console.debug('Enter replace function');
         if (this.contains(key)) {
-            const record = this.get(key);
-            record.value = value;
-            record.exptime = exptime;
-            record.flags = flags;
-            record.uniqueCas++;
-            this.set(key, record);
-            return 'STORED';
+            this.records.get(key).uniqueCas++;
+            return this.set(key, value, exptime, flags);
         } return 'NOT_STORED';
     }
 
-    append(key, value, exptime, flags) {
-        console.debug('Enter append function');
+    append(key, value) {
+        // console.debug('Enter append function');
         if (this.contains(key)) {
-            const record = this.get(key);
-            record.value = `${record.value}${value}`;
-            record.exptime = exptime;
-            record.flags = flags;
-            record.uniqueCas++;
-            this.set(key, record);
-            return 'STORED';
+            const record = this.records.get(key);
+            const newValue = `${record.value}${value}`;
+            return this.set(key, newValue, record.exptime, record.flags);
         } return 'NOT_STORED';
     }
 
-    prepend(key, value, exptime, flags) {
-        console.debug('Enter prepend function');
+    prepend(key, value) {
+        // console.debug('Enter prepend function');
         if (this.contains(key)) {
-            const record = this.get(key);
-            record.value = `${value}${record.value}`;
-            record.exptime = exptime;
-            record.flags = flags;
-            record.uniqueCas++;
-            this.set(key, record);
-            return 'STORED';
+            const record = this.records.get(key);
+            const newValue = `${value}${record.value}`;
+            return this.set(key, newValue, record.exptime, record.flags);
         } return 'NOT_STORED';
     }
 
     cas(key, value, exptime, flags, uniqueCas) {
         const currentRecord = this.records.get(key);
         if (this.contains(key)) {
-            if (currentRecord.uniqueCas === uniqueCas) {
-                return this.replace(key, value, exptime, flags);
+            if (currentRecord.uniqueCas === parseInt(uniqueCas)) {
+                return this.set(key, value, exptime, flags);
             } return 'EXISTS';
         } return 'NOT_FOUND';
     }
@@ -109,6 +95,13 @@ export default class Cache {
         return 'DELETED';
     }
 
+    flush() {
+        this.records.clear();
+        process.nextTick(() => this.purge());
+        console.log('All records flushed');
+        return 'FLUSH_ALL';
+    }
+
     purge() {
         if (this.maxRecords) {
             this.purgeRecords();
@@ -119,6 +112,7 @@ export default class Cache {
     }
 
     purgeRecords() {
+        this.totalRecords = this.records.size;
         if (this.records.size < this.maxRecords) {
             return;
         }

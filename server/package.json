@@ -48,6 +48,8 @@
     "report-dir": "./test/results/coverage"
   },
   "dependencies": {
-    "joi": "^17.4.0"
+    "es6-promisify": "^6.1.1",
+    "joi": "^17.4.0",
+    "memcached-promise": "^1.0.1"
   }
 }
