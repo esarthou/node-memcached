@@ -1,0 +1,23 @@
+config:
+    target: "ws://127.0.0.1:11111/ws"
+    ensure:
+      maxErrorRate: 1
+    phases:
+      - duration: 20
+        arrivalRate: 5
+        rampTo: 10
+        name: "Warming up"
+      - duration: 40
+        arrivalRate: 10
+        rampTo: 100
+        name: "Max load"    
+scenarios:
+  - engine: "socketio"
+    flow:
+      - emit:
+          channel: "echo"
+          data: "set capy 0 900 4 \r\nbara"
+      - think: 1
+      - emit:
+          channel: "echo"
+          data: "get capy"

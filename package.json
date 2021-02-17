@@ -1,0 +1,68 @@
+{
+  "name": "node-memcached",
+  "version": "1.0.0",
+  "description": "Node js implementation of the memcached protocol",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon  --ignore './test/' --exec babel-node ./src/index.js",
+    "start:prod": "node ./dist/index.js",
+    "test": "nyc --check-coverage --lines 60 --per-file --reporter=html --reporter=json-summary mocha --exit",
+    "test:load": "artillery run ./test/loadtest.yml --output test/results/load/result.json; npm run report:load",
+    "report:load": "artillery report ./test/results/load/result.json",
+    "clean": "rm -rf dist && mkdir dist ",
+    "build": "cp -R src/* dist/ && cp -r package*.json dist && cd dist && npm install --production && zip -rq ../package.zip . && cd ..",
+    "transpile": "babel src/ -d dist",
+    "lint": "eslint ./src",
+    "lint:html": "eslint ./src --format html -o ./test/results/lint/index.html",
+    "lint:json": "eslint ./src --format json -o ./test/results/lint/result.json",
+    "lint:report": "npm run lint:json; npm run lint:html;exit 0",
+    "package": "rm -rf dist && npm run transpile && cp -r package.json dist && cp -r package-lock.json dist && cd dist && npm install --production && zip -rq ../package.zip . && cd .. && rm -rf dist"
+  },
+  "author": "Esteban Sarthou",
+  "license": "ISC",
+  "devDependencies": {
+    "@babel/cli": "^7.10.4",
+    "@babel/core": "^7.9.6",
+    "@babel/node": "^7.8.7",
+    "@babel/plugin-proposal-class-properties": "^7.10.1",
+    "@babel/preset-env": "^7.10.4",
+    "@babel/register": "^7.10.4",
+    "artillery": "^1.6.1",
+    "babel-eslint": "^10.1.0",
+    "chai": "^4.2.0",
+    "eslint": "^7.20.0",
+    "eslint-config-airbnb-base": "^14.1.0",
+    "eslint-plugin-import": "^2.22.0",
+    "memcached": "^2.2.2",
+    "mocha": "^8.2.1",
+    "mochawesome": "^6.1.1",
+    "nodemon": "^2.0.4",
+    "nyc": "^15.1.0"
+  },
+  "eslint.options": {
+    "ignorePath": ".gitignore"
+  },
+  "eslintIgnore": [
+    "server/test/results/"
+  ],
+  "mocha": {
+    "require": "@babel/register",
+    "reporter": "mochawesome",
+    "reporterOptions": "reportDir=./test/results/mochawesome",
+    "spec": [
+      "./test/integration.test.js"
+    ]
+  },
+  "nyc": {
+    "reporter": [
+      "text-summary",
+      "html",
+      "json-summary"
+    ],
+    "report-dir": "./test/results/coverage"
+  },
+  "dependencies": {
+    "joi": "^17.4.0",
+    "memcached-promise": "^1.0.1"
+  }
+}
