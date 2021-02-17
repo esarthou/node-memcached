@@ -6,4 +6,3 @@ test/results/coverage/*
 test/results/lint/*
 package.zip
 .nyc_output
-
