@@ -3,8 +3,6 @@
 
 ## Basic usage:
 
--------------------
-
 1 - Clone repository on local machine running:  
     
         git clone https://github.com/esarthou/node-memcached
@@ -21,8 +19,6 @@ This will start an instance that listens for connections on **127.0.0.1:11111** 
 
 ## Bundling:
 
--------------------
-
 ### To compile the code for deployment execute:
 
         npm run clean
@@ -34,7 +30,6 @@ This will start an instance that listens for connections on **127.0.0.1:11111** 
         npm run start:prod
 
 ## Testing:
---------------------
 ### Integration tests: 
         npm run test
 
@@ -52,7 +47,5 @@ This will start an instance that listens for connections on **127.0.0.1:11111** 
 - Load test reports: ~/node-memcached/server/test/results/load/result.json.html
 
 ## Global dependencies:
-
-----------------------
 
 - node 12 
