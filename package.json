@@ -9,7 +9,7 @@
     "test": "nyc --check-coverage --lines 60 --per-file --reporter=html --reporter=json-summary mocha --exit",
     "test:load-manual": "nodemon --exec babel-node ./test/load.test.js",
     "test:load": "cd ./test/results/ && rm -rf load && mkdir load && artillery run ../loadtest.yml --output ./load/result.json; npm run report:load",
-    "report:load": "artillery report ./load/result.json",
+    "report:load": "artillery report ./test/results/load/result.json",
     "clean": "rm -rf dist && mkdir dist ",
     "build": "cp -R src/* dist/ && cp -r package*.json dist && cd dist && npm install --production && zip -rq ../package.zip . && cd ..",
     "transpile": "babel src/ -d dist",
