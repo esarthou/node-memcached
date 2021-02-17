@@ -136,10 +136,9 @@ export default class Cache {
     }
 
     stats() {
-        this.usedMemory = process.memoryUsage().rss / 1024 / 1024;
         return {
-            MemoryUsage: this.usedMemory,
-            TotalRecords: this.totalRecords,
+            MemoryUsage: process.memoryUsage().rss / 1024 / 1024,
+            TotalRecords: this.records.size(),
             MaxMemoryMB: this.maxMemoryMB,
             maxRecords: this.maxRecords,
         };

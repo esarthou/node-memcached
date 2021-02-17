@@ -8,3 +8,5 @@ test/results/lint/*.*
 package.zip
 .nyc_output
 node_modules/*
+.DS_Store
+.vscode/*

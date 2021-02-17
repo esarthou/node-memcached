@@ -7,7 +7,7 @@
     
         git clone https://github.com/esarthou/node-memcached
 
-2 - On your terminal aplication, navigate to the repository forlder and run 
+2 - On your terminal aplication, navigate to the repository folder and run 
             
         npm install
 
@@ -30,17 +30,17 @@ This will start an instance that listens for connections on **127.0.0.1:11111** 
         npm run start:prod
 
 ## Testing:
-### Integration tests: 
+### Integration & manual load tests: 
         npm run test
 
-### Load testing:
+### Automated load testing:
         npm run test:load
 
 ### Reports:
 
 - Linter: ~/node-memcached/test/results/lint/index.html
 
-- Integration tests: ~/node-memcached/test/results/mochawesome/mochawesome.html
+- Integration/Load tests: ~/node-memcached/test/results/mochawesome/mochawesome.html
 
 - Test coverage: ~/node-memcached/test/results/coverage/index.html
 

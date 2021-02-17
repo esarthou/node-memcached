@@ -4,8 +4,6 @@ import { describe, it } from 'mocha';
 import Memcached from 'memcached-promise';
 import Server from '../src/lib/server';
 
-console.log(process.env.NODE_OPTIONS, process.env.VSCODE_INSPECTOR_OPTIONS);
-
 // Initialize memcached server
 const memcached = new Server();
 const options = {
